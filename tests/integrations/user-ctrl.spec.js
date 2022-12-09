@@ -5,6 +5,7 @@ const { getReqMock, getResMock, getResponses } = require('../mocks/session-mocks
 const { generateUserMock } = require('../mocks/users-mock')
 
 const UserController = require('../../src/controllers/user-ctrl')
+const UserService = require('../../src/services/user-service')
 
 const userDataMock = generateUserMock()
 
@@ -32,7 +33,7 @@ describe('[Integration] User Controller create', () => {
         expect(response.data).toMatchObject(invalidEmail)        
     })
     it('Should return status 400 if no password is provided', async () => {
-        const req = getReqMock({ email: faker.internet.domainName() })
+        const req = getReqMock({ email: faker.internet.email() })
 
         const res = getResMock()
         const { invalidPassword } = getResponses()   
@@ -47,10 +48,12 @@ describe('[Integration] User Controller create', () => {
         const req = getReqMock(userDataMock)
 
         const res = getResMock()
+        jest.spyOn(UserService, "create").mockReturnValue(userDataMock)
 
         const response = await UserController.create(req, res)
-
+        const userResponseMock = {user:userDataMock}
+        
         expect(response.status).toBe(200)
-        expect(response.data).toMatchObject(userDataMock)
+        expect(response.data).toMatchObject(userResponseMock)
     })
 })
