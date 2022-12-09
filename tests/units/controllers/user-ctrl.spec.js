@@ -16,7 +16,7 @@ class UserServiceMock {
     }
 }
 
-describe('User Controller', () => {
+describe('User Controller create', () => {
     it('Should return status 200 if user is provided', async () => {
         const req = getReqMock({
             "name": "letscode",
@@ -75,23 +75,8 @@ describe('User Controller', () => {
     })
 })
 
-/*static async changePassword(req, res) {
-        try {
-            const { email, oldPassword, newPassword, confirmPassword} = req.body
-
-            await UserService.updatePassword(email, newPassword, confirmPassword)
-    
-            return res.status(200).json({
-                message: 'ok'
-            })
-        } catch (error) {
-            return res.status(error.status || 500).json({ message: error.message })
-        }*/
-
 describe('User Controller changePassword', () => {
-    beforeEach(() => {
-        jest.setTimeout(60000);
-      })
+
     it('Should return status 400 if email is not provided', async () => {
         const req = getReqMock({
             "email": "",
@@ -108,7 +93,15 @@ describe('User Controller changePassword', () => {
         expect(response.status).toBe(400)
         expect(response.data).toMatchObject(invalidEmail)       
     })
-    //se der erro, reze e volte o teste tres vezes!
+    
+    //erro comum em E2E, funciona de 3 em 3 vezes
+    /*[E2E] Session Create › Should return 200 for valid credentials
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 401*/
+    
     it("should return status 400 if email is invalid", async () => {
         const req = getReqMock({
             "email": "email.com",
@@ -125,6 +118,7 @@ describe('User Controller changePassword', () => {
         expect(response.status).toBe(400)
         expect(response.data).toMatchObject(invalidEmail)       
     })
+    
     it("should return status 400 if all passwords are not provided",async () =>{
         const req = getReqMock({
             "email": "email@email.com",
@@ -141,6 +135,7 @@ describe('User Controller changePassword', () => {
         expect(response.status).toBe(400)
         expect(response.data).toMatchObject(invalidPassword)     
     })
+   
     it("should return status 400 if oldPassword is not provided",async () =>{
         const req = getReqMock({
             "email": "email@email.com",
@@ -157,6 +152,7 @@ describe('User Controller changePassword', () => {
         expect(response.status).toBe(400)
         expect(response.data).toMatchObject(invalidPassword)     
     })
+     
     it("should return status 400 if newPassword is not provided",async () =>{
         const req = getReqMock({
             "email": "email@email.com",
@@ -173,12 +169,13 @@ describe('User Controller changePassword', () => {
         expect(response.status).toBe(400)
         expect(response.data).toMatchObject(invalidPassword)     
     })
+    
     it("should return status 400 if confirmPassword is not provided",async () =>{
         const req = getReqMock({
             "email": "email@email.com",
             "oldPassword": "1247",
             "newPassword": "1245",
-            "confirmPassword":"1245"
+            "confirmPassword":""
         })
 
         const res = getResMock()
@@ -186,9 +183,10 @@ describe('User Controller changePassword', () => {
 
         const response = await UserController.changePassword(req, res)
 
-        expect(response.status).toBe(200)
+        expect(response.status).toBe(400)
         expect(response.data).toMatchObject(invalidPassword)     
     })
+    
     it("should return 401 if oldPassword is wrong", async () =>{
         const req = getReqMock({
             "email": "email@email.com",

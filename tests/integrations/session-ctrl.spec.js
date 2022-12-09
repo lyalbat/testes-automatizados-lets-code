@@ -10,6 +10,7 @@ const userDataMock = generateUserMock()
 
 describe('[Integration] Session Controller', () => {
     beforeAll(async () => {
+        jest.setTimeout(60000);
         await mongoose.connect('mongodb+srv://letscode:letscode@cluster0.nwudzbw.mongodb.net/letscode?retryWrites=true&w=majority')
         await User.create(userDataMock)
     })
@@ -93,14 +94,15 @@ describe('[Integration] Session Controller', () => {
         expect(response.data).toMatchObject(invalidCredentials)
     })
 
-    it('Should return status 401 if pasword does not match', async () => {
+    it('Should return status 200 if pasword does not match', async () => {
         const req = getReqMock(userDataMock)
 
         const res = getResMock()
 
         const response = await SessionController.create(req, res)
-
+        console.log(response.data)
         expect(response.status).toBe(200)
+        
         expect(response.data).toHaveProperty('token')
     })
 })

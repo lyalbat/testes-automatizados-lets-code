@@ -11,6 +11,7 @@ const userDataMock = generateUserMock()
 
 describe('[E2E] Session Create', () => {
     beforeAll(async () => {
+        jest.setTimeout(60000);
         await mongoose.connect('mongodb+srv://letscode:letscode@cluster0.nwudzbw.mongodb.net/letscode?retryWrites=true&w=majority')
         await User.create(userDataMock)
     })
